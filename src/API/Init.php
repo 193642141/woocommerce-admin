@@ -86,6 +86,16 @@ class Init {
 			);
 		}
 
+		if ( Loader::is_feature_enabled( 'shipping-label-banner' ) ) {
+			$controllers = array_merge(
+				$controllers,
+				array(
+					'Automattic\WooCommerce\Admin\API\ShippingLabel',
+				)
+			);
+
+		}
+
 		// The performance indicators controller must be registered last, after other /stats endpoints have been registered.
 		$controllers[] = 'Automattic\WooCommerce\Admin\API\Reports\PerformanceIndicators\Controller';
 
