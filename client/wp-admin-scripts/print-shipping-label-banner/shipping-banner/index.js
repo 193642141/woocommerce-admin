@@ -15,6 +15,7 @@ import '../style.scss';
 import DismissModal from '../dismiss-modal';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import withSelect from 'wc-api/with-select';
+import { withDispatch } from '@wordpress/data';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
@@ -51,7 +52,17 @@ export class ShippingBanner extends Component {
 		// TODO: install and activate WCS
 		// TODO: open WCS modal
 		this.trackBannerEvent( 'shipping_banner_create_label_click' );
+		this.installAndActivatePlugins( 'woocommerce-services' );
 	};
+
+	async installAndActivatePlugins( pluginSlug ) {
+		// Avoid double activating.
+		const { installPlugins } = this.props;
+		// if ( isRequesting ) {
+		// 	return false;
+		// }
+		installPlugins( [ pluginSlug ] );
+	}
 
 	woocommerceServiceLinkClicked = () => {
 		this.trackBannerEvent(
@@ -151,6 +162,14 @@ export default compose(
 		return {
 			activePlugins: getActivePlugins(),
 			isJetpackConnected: isJetpackConnected(),
+		};
+	} ),
+	withDispatch( ( dispatch ) => {
+		const { activatePlugins, installPlugins } = dispatch( 'wc-api' );
+
+		return {
+			activatePlugins,
+			installPlugins,
 		};
 	} )
 )( ShippingBanner );
